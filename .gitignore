@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local databases and generated data
+*.db
+*.sqlite
+*.sqlite3
+data/sample/*
+data/sqlite/*
+!data/sample/.gitkeep
+!data/sqlite/.gitkeep
+
+# Generated reports
+reports/profiles/*
+reports/cleaning/*
+reports/quality/*
+reports/migration/*
+reports/insights/*
+!reports/profiles/.gitkeep
+!reports/cleaning/.gitkeep
+!reports/quality/.gitkeep
+!reports/migration/.gitkeep
+!reports/insights/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
