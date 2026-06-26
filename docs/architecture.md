@@ -11,13 +11,15 @@ Streamlit frontend
 FastAPI backend
        |
        v
-Services, schemas, utilities, and future agents
+Data intake service, readers, schemas, utilities, and future agents
        |
        v
 Local data assets, DuckDB, SQLite metadata, generated reports
 ```
 
 The backend will expose application APIs and coordinate services. The frontend will provide analyst-facing workflows such as upload, profiling review, cleaning review, query, quality reporting, and migration readiness review.
+
+The current backend includes a multi-format intake layer. API routes accept uploads, persist raw files under `data/raw/`, select a reader based on extension, inspect metadata, and store simple JSON metadata for later lookup.
 
 ## Frontend and Backend Separation
 
@@ -29,7 +31,7 @@ Keeping these layers separate makes it easier to evolve from a local demo into a
 
 ## Data Folder Structure
 
-- `data/raw/`: raw user-provided files before processing.
+- `data/raw/`: raw user-provided files before processing, plus simple `.metadata.json` intake records.
 - `data/processed/`: cleaned, normalized, or transformed outputs.
 - `data/sample/`: deterministic synthetic datasets for testing and demos.
 - `data/sqlite/`: local SQLite databases for metadata and database-ingestion examples.
@@ -48,7 +50,7 @@ Generated data files are intentionally ignored by git, while `.gitkeep` files pr
 
 The planned agents represent specialized stages of an analytics workflow:
 
-- Data Intake Agent accepts files and records metadata.
+- Data Intake Agent accepts files and records metadata. The current intake service is the non-agent foundation for this capability.
 - Profiling Agent summarizes schema, distributions, nulls, duplicates, and anomalies.
 - Cleaning Agent proposes and applies cleanup actions.
 - Data Quality Agent validates business and technical rules.
@@ -58,6 +60,22 @@ The planned agents represent specialized stages of an analytics workflow:
 - Reporting / Insight Agent produces stakeholder-facing summaries.
 
 LangGraph is planned as the orchestration layer once individual capabilities exist. The project does not implement agent orchestration in the first milestone.
+
+## Reader-Based Intake Design
+
+The intake engine uses a small reader interface under `backend/app/services/readers/`. Each reader is responsible for extension detection, schema inference, sample loading, row counting, and basic metadata extraction for one format family.
+
+Supported readers:
+
+- `CSVReader`
+- `TSVReader`
+- `ExcelReader`
+- `JSONReader`
+- `JSONLReader`
+- `ParquetReader`
+- `SQLiteReader`
+
+The service layer standardizes reader output into one metadata response shape. Upload handling includes filename sanitization, supported-extension checks, path traversal prevention through safe destination construction, and a 100 MB upload limit.
 
 ## Local-First and Free-Tier Friendly
 

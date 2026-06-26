@@ -6,7 +6,7 @@ Create project structure, documentation, configuration, basic FastAPI and Stream
 
 ## Milestone 2: Multi-Format Ingestion
 
-Implement file readers for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite files.
+Implemented the foundation: file readers for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite files, plus FastAPI intake endpoints and simple metadata persistence.
 
 ## Milestone 3: Profiling Engine
 

@@ -2,7 +2,7 @@
 
 Agentic Analytics Platform is a local-first, free/open-source analytics and data operations project. It is designed to help teams ingest raw datasets, profile them, clean messy records, validate quality, query data in natural language, generate business insights, and prepare assets for migration to databases or warehouses.
 
-This first milestone is only the project scaffold, documentation, configuration, and synthetic sample data generation.
+The current implementation includes the initial scaffold, deterministic sample data generation, and a multi-format data intake engine for registering and inspecting raw assets.
 
 ## Why This Exists
 
@@ -38,6 +38,7 @@ The platform will eventually model a full data operations path:
 
 - FastAPI backend for application APIs and orchestration boundaries.
 - Streamlit frontend for local analyst workflows and demos.
+- Multi-format data intake service for raw asset registration and metadata extraction.
 - DuckDB for local analytical querying.
 - Pandas, Polars, and PyArrow for data processing.
 - SQLite for app metadata and database-ingestion demos.
@@ -85,9 +86,36 @@ Start the frontend:
 make frontend
 ```
 
+## Data Intake Engine
+
+The backend can inspect and register these MVP formats:
+
+- CSV
+- TSV
+- Excel `.xlsx`
+- JSON
+- JSONL / NDJSON
+- Parquet
+- SQLite database files: `.db`, `.sqlite`, `.sqlite3`
+
+The intake API extracts standardized metadata including asset ID, file name, extension, size, format, row count, column count, columns, schema, sample rows, warnings, and creation timestamp.
+
+Upload a file while the backend is running:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/intake/upload" \
+  -F "file=@data/sample/customers.csv"
+```
+
+List known raw assets:
+
+```bash
+curl "http://127.0.0.1:8000/api/intake/assets"
+```
+
 ## Current Status
 
-Milestone 1 is scaffolded:
+Milestones 1 and 2 foundations are implemented:
 
 - Project structure
 - FastAPI health endpoint
@@ -96,8 +124,11 @@ Milestone 1 is scaffolded:
 - Python packaging and tooling configuration
 - Deterministic synthetic sample data generator
 - Initial tests for health checks and generated data files
+- Reader classes for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite
+- Data intake service with file safety checks and JSON metadata persistence
+- FastAPI intake upload and asset listing endpoints
 
-No ingestion engine, agents, LangGraph workflow, cleaning logic, quality validation, query agent, or migration agent has been implemented yet.
+No Cleaning Agent, Query Agent, Data Quality Agent, Migration Readiness Agent, LangGraph workflow, LLM calls, or Streamlit upload UI has been implemented yet.
 
 ## MVP Roadmap
 

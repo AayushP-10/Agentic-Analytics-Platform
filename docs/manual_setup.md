@@ -56,6 +56,8 @@ This creates deterministic demo files under `data/sample/` and `data/sqlite/`.
 make test
 ```
 
+The tests generate temporary sample files and verify reader behavior for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite.
+
 ## 7. Run Linting
 
 ```bash
@@ -69,6 +71,19 @@ make backend
 ```
 
 The health endpoint is available at `http://127.0.0.1:8000/health`.
+
+Upload a generated CSV sample:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/intake/upload" \
+  -F "file=@data/sample/customers.csv"
+```
+
+List ingested assets:
+
+```bash
+curl "http://127.0.0.1:8000/api/intake/assets"
+```
 
 ## 9. Start the Frontend
 

@@ -19,6 +19,7 @@ dependencies = [
     "openpyxl",
     "pydantic",
     "python-dotenv",
+    "python-multipart",
 ]
 
 [project.optional-dependencies]
