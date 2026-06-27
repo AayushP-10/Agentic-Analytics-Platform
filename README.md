@@ -2,7 +2,7 @@
 
 Agentic Analytics Platform is a local-first, free/open-source analytics and data operations project. It is designed to help teams ingest raw datasets, profile them, clean messy records, validate quality, query data in natural language, generate business insights, and prepare assets for migration to databases or warehouses.
 
-The current implementation includes the initial scaffold, deterministic sample data generation, and a multi-format data intake engine for registering and inspecting raw assets.
+The current implementation includes the initial scaffold, deterministic sample data generation, a multi-format data intake engine, and a deterministic data profiling engine.
 
 ## Why This Exists
 
@@ -39,6 +39,7 @@ The platform will eventually model a full data operations path:
 - FastAPI backend for application APIs and orchestration boundaries.
 - Streamlit frontend for local analyst workflows and demos.
 - Multi-format data intake service for raw asset registration and metadata extraction.
+- Data profiling service for column statistics, quality summaries, warnings, and JSON reports.
 - DuckDB for local analytical querying.
 - Pandas, Polars, and PyArrow for data processing.
 - SQLite for app metadata and database-ingestion demos.
@@ -113,9 +114,33 @@ List known raw assets:
 curl "http://127.0.0.1:8000/api/intake/assets"
 ```
 
+## Data Profiling Engine
+
+Intake metadata answers basic registration questions: what file was received, what format it is, how large it is, what columns it appears to contain, and a small sample.
+
+Profiling goes deeper. It computes dataset-level and column-level statistics, duplicate counts, missing-value rates, inferred column types, numeric ranges, categorical top values, datetime ranges, boolean distributions, deterministic warnings, and a quality summary. Profile reports are saved as JSON under `reports/profiles/`.
+
+Create a profile for an uploaded or inspected asset:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/profiling/assets/<asset_id>"
+```
+
+For SQLite assets, profile a selected table:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/profiling/assets/<asset_id>?table_name=orders"
+```
+
+List saved profile reports:
+
+```bash
+curl "http://127.0.0.1:8000/api/profiling/reports"
+```
+
 ## Current Status
 
-Milestones 1 and 2 foundations are implemented:
+Milestones 1, 2, and 3 foundations are implemented:
 
 - Project structure
 - FastAPI health endpoint
@@ -127,6 +152,8 @@ Milestones 1 and 2 foundations are implemented:
 - Reader classes for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite
 - Data intake service with file safety checks and JSON metadata persistence
 - FastAPI intake upload and asset listing endpoints
+- Profiling service with dataset statistics, column statistics, warnings, quality summary, and JSON report persistence
+- FastAPI profiling endpoints for creating, listing, and loading profile reports
 
 No Cleaning Agent, Query Agent, Data Quality Agent, Migration Readiness Agent, LangGraph workflow, LLM calls, or Streamlit upload UI has been implemented yet.
 

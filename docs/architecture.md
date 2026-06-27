@@ -11,7 +11,7 @@ Streamlit frontend
 FastAPI backend
        |
        v
-Data intake service, readers, schemas, utilities, and future agents
+Data intake service, profiling service, readers, schemas, utilities, and future agents
        |
        v
 Local data assets, DuckDB, SQLite metadata, generated reports
@@ -20,6 +20,8 @@ Local data assets, DuckDB, SQLite metadata, generated reports
 The backend will expose application APIs and coordinate services. The frontend will provide analyst-facing workflows such as upload, profiling review, cleaning review, query, quality reporting, and migration readiness review.
 
 The current backend includes a multi-format intake layer. API routes accept uploads, persist raw files under `data/raw/`, select a reader based on extension, inspect metadata, and store simple JSON metadata for later lookup.
+
+The backend also includes a deterministic profiling layer. It uses the existing intake metadata when available, loads a bounded number of rows, computes dataset and column statistics, and saves profile reports under `reports/profiles/`.
 
 ## Frontend and Backend Separation
 
@@ -51,7 +53,7 @@ Generated data files are intentionally ignored by git, while `.gitkeep` files pr
 The planned agents represent specialized stages of an analytics workflow:
 
 - Data Intake Agent accepts files and records metadata. The current intake service is the non-agent foundation for this capability.
-- Profiling Agent summarizes schema, distributions, nulls, duplicates, and anomalies.
+- Profiling Agent summarizes schema, distributions, nulls, duplicates, and anomalies. The current profiling service is the deterministic non-agent foundation for this capability.
 - Cleaning Agent proposes and applies cleanup actions.
 - Data Quality Agent validates business and technical rules.
 - Query Agent translates natural language questions into local analytical queries.
@@ -76,6 +78,30 @@ Supported readers:
 - `SQLiteReader`
 
 The service layer standardizes reader output into one metadata response shape. Upload handling includes filename sanitization, supported-extension checks, path traversal prevention through safe destination construction, and a 100 MB upload limit.
+
+## Profiling Design
+
+The profiling service lives under `backend/app/services/profiling_service.py`. It accepts an `asset_id` or file path, reuses intake metadata when available, and supports the same MVP formats as intake.
+
+Profiling differs from intake:
+
+- Intake registers an asset and extracts lightweight metadata.
+- Profiling analyzes the data values and produces detailed statistics, warnings, and quality summaries.
+
+The profiler computes:
+
+- Dataset row and column counts
+- Missing cell counts and percentages
+- Duplicate row counts and percentages
+- Memory usage estimate
+- Column-level nulls, uniqueness, duplicate values, and sample values
+- Numeric min, max, mean, median, standard deviation, negative values, zeroes, and IQR outliers
+- Categorical top values, text lengths, blanks, and high-cardinality hints
+- Datetime ranges and invalid date counts where detectable
+- Boolean true/false distribution
+- Deterministic quality scores and recommended next steps
+
+Reports are saved as JSON files in `reports/profiles/`. These reports are intended to feed future cleaning, data quality, query, migration readiness, and reporting agents.
 
 ## Local-First and Free-Tier Friendly
 

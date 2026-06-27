@@ -56,7 +56,7 @@ This creates deterministic demo files under `data/sample/` and `data/sqlite/`.
 make test
 ```
 
-The tests generate temporary sample files and verify reader behavior for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite.
+The tests generate temporary sample files and verify reader and profiling behavior for CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite.
 
 ## 7. Run Linting
 
@@ -84,6 +84,26 @@ List ingested assets:
 ```bash
 curl "http://127.0.0.1:8000/api/intake/assets"
 ```
+
+Create a profile for an ingested asset:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/profiling/assets/<asset_id>"
+```
+
+For SQLite, provide a table name when needed:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/api/profiling/assets/<asset_id>?table_name=orders"
+```
+
+List saved profile reports:
+
+```bash
+curl "http://127.0.0.1:8000/api/profiling/reports"
+```
+
+Profile JSON reports are saved under `reports/profiles/`.
 
 ## 9. Start the Frontend
 

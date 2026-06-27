@@ -20,11 +20,19 @@ Inputs may include CSV, TSV, Excel, JSON, JSONL / NDJSON, Parquet, and SQLite da
 
 ## 2. Data Intake Agent
 
-The intake stage will identify file type, capture metadata, record source information, and prepare the asset for downstream profiling.
+The intake stage identifies file type, captures metadata, records source information, and prepares the asset for downstream profiling. The current implementation provides this as a deterministic service, not an agent.
 
 ## 3. Profiling Agent
 
-The profiling stage will inspect schema, data types, null rates, duplicate records, cardinality, summary statistics, and suspicious values.
+The profiling stage inspects schema, data types, null rates, duplicate records, cardinality, summary statistics, and suspicious values. The current implementation provides this as a deterministic profiling service that saves JSON reports under `reports/profiles/`.
+
+These profile reports will later provide evidence for:
+
+- Cleaning recommendations
+- Data quality rules
+- Query planning and semantic hints
+- Migration readiness checks
+- Reporting and insight summaries
 
 ## 4. Cleaning Agent
 
@@ -50,4 +58,4 @@ The migration stage will assess whether datasets are ready for relational databa
 
 The reporting stage will create stakeholder-friendly summaries, data quality reports, migration notes, and business insights.
 
-This first milestone creates only the repository foundation and sample data required to test these workflows later.
+The current implementation covers the scaffold, sample data generation, multi-format intake foundation, and deterministic profiling foundation. Agent orchestration and LLM behavior are intentionally deferred.

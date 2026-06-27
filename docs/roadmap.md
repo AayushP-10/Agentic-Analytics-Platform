@@ -10,7 +10,7 @@ Implemented the foundation: file readers for CSV, TSV, Excel, JSON, JSONL / NDJS
 
 ## Milestone 3: Profiling Engine
 
-Build profiling services for schemas, nulls, duplicates, distributions, data types, and anomaly hints.
+Implemented the deterministic profiling foundation: dataset statistics, column statistics, quality summaries, warnings, SQLite table profiling, JSON report persistence, and FastAPI profiling endpoints.
 
 ## Milestone 4: Streamlit Upload UI
 
